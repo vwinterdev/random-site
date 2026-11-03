@@ -1,11 +1,15 @@
 name: Publish image
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [main]
+
+concurrency:
+  group: release-main
+  cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -16,7 +20,7 @@ jobs:
       - name: Build and push to GHCR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_TAG: build-${{ github.run_number }}
         run: |
           set -euo pipefail
           IMAGE="ghcr.io/${GITHUB_REPOSITORY,,}:$RELEASE_TAG"
@@ -28,3 +32,6 @@ jobs:
             --label "org.opencontainers.image.source=$SOURCE" .
           docker push "$IMAGE"
           docker push "$LATEST"
+          gh release create "$RELEASE_TAG" \
+            --target "$GITHUB_SHA" \
+            --title "$RELEASE_TAG" --generate-notes
