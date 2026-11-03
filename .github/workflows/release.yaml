@@ -3,6 +3,7 @@ name: Publish image
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: release-main
@@ -30,8 +31,11 @@ jobs:
           SOURCE="https://github.com/$GITHUB_REPOSITORY"
           docker build -t "$IMAGE" -t "$LATEST" \
             --label "org.opencontainers.image.source=$SOURCE" .
+          printf "Publishing %s\n" "$IMAGE"
           docker push "$IMAGE"
+          printf "Publishing %s\n" "$LATEST"
           docker push "$LATEST"
+          printf "Creating release %s\n" "$RELEASE_TAG"
           gh release create "$RELEASE_TAG" \
             --target "$GITHUB_SHA" \
             --title "$RELEASE_TAG" --generate-notes
