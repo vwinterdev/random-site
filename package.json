@@ -1,0 +1,20 @@
+{
+  "name": "site-one",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --env-file=.env index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "^3.0.84",
+    "ai": "^7.0.162"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6"
+  }
+}
